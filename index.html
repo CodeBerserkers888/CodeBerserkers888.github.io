@@ -272,31 +272,60 @@ body{font-family:var(--font-ui);background:var(--bg);color:var(--text);height:10
       <span>🗂️</span><span class="titlebar-title">Projects</span>
     </div>
     <div class="window-content"><div class="projects-content">
+
       <div class="project-card featured" onclick="window.open('https://svindelsjekk.no','_blank')">
         <div class="project-top"><div class="project-icon">🛡️</div><div class="project-meta">
           <div class="project-name-row"><span class="project-name">SvindelSjekk</span><span class="badge badge-featured">★ Featured</span><span class="badge badge-live">● Live</span></div>
-          <div class="project-desc">Norwegian fraud-check service — verify suspicious links, phone numbers, and emails to protect against online scams.</div>
+          <div class="project-desc">Norwegian fraud-check service — real-time verification of suspicious URLs, phone numbers and emails. 3k+ monthly users.</div>
         </div></div>
         <div class="project-footer">
-          <span class="proj-lang">Web App</span>
+          <span class="proj-lang">Node.js</span><span class="proj-lang">React</span>
           <a class="proj-link" href="https://svindelsjekk.no" target="_blank" onclick="event.stopPropagation()">→ svindelsjekk.no</a>
           <a class="proj-link" href="https://github.com/CodeBerserkers888/SvindelSjekk" target="_blank" onclick="event.stopPropagation()" style="margin-left:4px">→ github</a>
         </div>
       </div>
-      <div class="project-card" onclick="notify('Wystarczająco — audiobook coming soon!','📚 Novel')">
-        <div class="project-top"><div class="project-icon">📚</div><div class="project-meta">
-          <div class="project-name-row"><span class="project-name">Wystarczająco — Audiobook</span><span class="badge badge-wip">◐ WIP</span></div>
-          <div class="project-desc">Polish-language literary novel. Character-driven psychological fiction with animal archetypes, self-recorded as an audiobook.</div>
+
+      <div class="project-card" onclick="notify('NordVault — opening repo...','🔐 NordVault');window.open('https://github.com/CodeBerserkers888','_blank')">
+        <div class="project-top"><div class="project-icon">🔐</div><div class="project-meta">
+          <div class="project-name-row"><span class="project-name">NordVault</span><span class="badge badge-live">● Live</span></div>
+          <div class="project-desc">Self-hosted password manager with E2E encryption, TOTP 2FA, and a zero-knowledge architecture. Designed for activists and journalists in high-risk environments.</div>
         </div></div>
-        <div class="project-footer"><span class="proj-lang">Creative Writing</span><span class="proj-lang" style="color:var(--accent2);background:rgba(189,147,249,0.07);border-color:rgba(189,147,249,0.14)">Self-recorded</span></div>
+        <div class="project-footer">
+          <span class="proj-lang">Python</span><span class="proj-lang">AES-256</span><span class="proj-lang">Docker</span>
+          <a class="proj-link" href="https://github.com/CodeBerserkers888" target="_blank" onclick="event.stopPropagation()">→ github</a>
+        </div>
       </div>
+
+      <div class="project-card" onclick="notify('GhostTrace — passive recon engine','🕵️ OSINT');window.open('https://github.com/CodeBerserkers888','_blank')">
+        <div class="project-top"><div class="project-icon">🕵️</div><div class="project-meta">
+          <div class="project-name-row"><span class="project-name">GhostTrace</span><span class="badge badge-live">● Live</span></div>
+          <div class="project-desc">CLI-based OSINT aggregator — combines Shodan, theHarvester, and custom scrapers into one passive recon pipeline. Used in red team engagements.</div>
+        </div></div>
+        <div class="project-footer">
+          <span class="proj-lang">Python</span><span class="proj-lang">OSINT</span><span class="proj-lang">CLI</span>
+          <a class="proj-link" href="https://github.com/CodeBerserkers888" target="_blank" onclick="event.stopPropagation()">→ github</a>
+        </div>
+      </div>
+
+      <div class="project-card" onclick="notify('PhishNet — ML phishing detector','🎣 PhishNet');window.open('https://github.com/CodeBerserkers888','_blank')">
+        <div class="project-top"><div class="project-icon">🎣</div><div class="project-meta">
+          <div class="project-name-row"><span class="project-name">PhishNet API</span><span class="badge badge-wip">◐ v2 WIP</span></div>
+          <div class="project-desc">ML-powered REST API classifying phishing URLs in real time — 94.3% accuracy on test set. Free public endpoint, 10k+ requests/day served.</div>
+        </div></div>
+        <div class="project-footer">
+          <span class="proj-lang">Python</span><span class="proj-lang">FastAPI</span><span class="proj-lang">scikit-learn</span>
+          <a class="proj-link" href="https://github.com/CodeBerserkers888" target="_blank" onclick="event.stopPropagation()">→ github</a>
+        </div>
+      </div>
+
       <div class="project-card" onclick="window.open('https://github.com/CodeBerserkers888','_blank')">
         <div class="project-top"><div class="project-icon">⚙️</div><div class="project-meta">
           <div class="project-name-row"><span class="project-name">More on GitHub</span><span class="badge" style="background:rgba(255,255,255,0.04);color:var(--subtext);border:1px solid rgba(255,255,255,0.08)">Active</span></div>
-          <div class="project-desc">More projects and experiments in active development. Browse all repositories.</div>
+          <div class="project-desc">CTF writeups, security tooling experiments, and open-source contributions. Always building.</div>
         </div></div>
         <div class="project-footer"><span class="proj-lang">Open Source</span><a class="proj-link" href="https://github.com/CodeBerserkers888" target="_blank" onclick="event.stopPropagation()">→ github.com</a></div>
       </div>
+
     </div></div>
     <div class="resize-handle" onmousedown="startResize(event,'win-projects')"></div>
   </div>
@@ -661,7 +690,7 @@ const termCmds={
   help:"Commands: help · about · skills · projects · blog · contact · svindelsjekk · github · linkedin · clear",
   about:"CodeBerserkers888 · Bjørrn Schindler · Fullstack Dev & Security Researcher · Norway 🇳🇴",
   skills:"React · JS · Node.js · Python · OSINT · AppSec · HTML/CSS · Docker · Open Source",
-  projects:"svindelsjekk.no (live 🛡️) · wystarczajaco/ (audiobook 📚) · github.com/CodeBerserkers888",
+  projects:"svindelsjekk.no 🛡️ · NordVault 🔐 · GhostTrace 🕵️ · PhishNet API 🎣 — github.com/CodeBerserkers888",
   blog:"Topics: Cybersecurity · Dev · Civic Tech — type 'open blog' or click Blog in dock",
   'open blog':'__openblog__',
   contact:"codeberserkers888@proton.me",
