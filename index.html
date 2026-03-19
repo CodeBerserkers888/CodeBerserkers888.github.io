@@ -13,22 +13,49 @@
   --yellow:#f1fa8c;--red:#ff5555;--green:#50fa7b;--blue:#8be9fd;--orange:#ffb86c;
   --titlebar:#0a0a12;--radius:14px;
   --font-mono:'JetBrains Mono',monospace;--font-ui:'Outfit',sans-serif;
-  --glow:0 0 30px rgba(100,255,218,0.12);
+  --glow:0 0 30px rgba(100,255,218,0.15);
   --shadow:0 24px 64px rgba(0,0,0,0.7),0 4px 16px rgba(0,0,0,0.5);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:var(--font-ui);background:var(--bg);color:var(--text);height:100vh;overflow:hidden;user-select:none;}
-#wallpaper{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 70% 60% at 15% 85%,rgba(100,255,218,0.055) 0%,transparent 55%),radial-gradient(ellipse 50% 50% at 85% 15%,rgba(189,147,249,0.065) 0%,transparent 50%),#0d0d14;}
-#bg-canvas{position:absolute;inset:0;width:100%;height:100%;opacity:0.45;}
-body::after{content:'';position:fixed;inset:0;z-index:1;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;}
-#topbar{position:fixed;top:0;left:0;right:0;height:32px;background:rgba(10,10,18,0.88);backdrop-filter:blur(28px) saturate(180%);border-bottom:1px solid rgba(100,255,218,0.055);display:flex;align-items:center;padding:0 16px;z-index:1000;}
+
+/* ── WALLPAPER ── */
+#wallpaper{position:fixed;inset:0;z-index:0;overflow:hidden;}
+#bg-canvas{position:absolute;inset:0;width:100%;height:100%;}
+#aurora{position:absolute;inset:0;pointer-events:none;}
+.aurora-blob{position:absolute;border-radius:50%;filter:blur(80px);animation:auroraFloat linear infinite;opacity:0;}
+@keyframes auroraFloat{
+  0%{transform:translate(0,0) scale(1);opacity:0;}
+  10%{opacity:1;}
+  50%{transform:translate(var(--tx),var(--ty)) scale(var(--sc));}
+  90%{opacity:1;}
+  100%{transform:translate(0,0) scale(1);opacity:0;}
+}
+@keyframes scanline{
+  0%{transform:translateY(-100%);}
+  100%{transform:translateY(100vh);}
+}
+.scanline{position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(to bottom,transparent,rgba(100,255,218,0.04),transparent);animation:scanline 8s linear infinite;pointer-events:none;z-index:1;}
+#grid-overlay{position:fixed;inset:0;z-index:1;pointer-events:none;
+  background-image:linear-gradient(rgba(100,255,218,0.028) 1px,transparent 1px),linear-gradient(90deg,rgba(100,255,218,0.028) 1px,transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse 90% 90% at 50% 50%,black 20%,transparent 80%);}
+#noise{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0.03;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+/* ── TOPBAR ── */
+#topbar{position:fixed;top:0;left:0;right:0;height:32px;background:rgba(10,10,18,0.88);backdrop-filter:blur(28px) saturate(180%);border-bottom:1px solid rgba(100,255,218,0.06);display:flex;align-items:center;padding:0 16px;z-index:1000;}
 .tb-left{display:flex;align-items:center;gap:4px;flex:1;}
 .tb-center{position:absolute;left:50%;transform:translateX(-50%);font-size:12.5px;color:var(--text);font-weight:600;letter-spacing:0.4px;}
 .tb-right{display:flex;align-items:center;gap:14px;margin-left:auto;font-size:11.5px;color:var(--subtext);font-family:var(--font-mono);}
 .tb-appname{font-size:12.5px;font-weight:700;color:var(--accent);margin-right:6px;}
 .tb-menu{font-size:11.5px;color:var(--subtext);cursor:pointer;padding:3px 8px;border-radius:5px;transition:all 0.15s;font-weight:500;}
 .tb-menu:hover{background:rgba(100,255,218,0.08);color:var(--accent);}
+
+/* ── DESKTOP ── */
 #desktop{position:fixed;inset:32px 0 62px 0;overflow:hidden;z-index:2;}
+
+/* ── DOCK ── */
 #dock{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(10,10,20,0.78);backdrop-filter:blur(32px) saturate(200%);border:1px solid rgba(255,255,255,0.06);border-radius:20px;display:flex;align-items:center;gap:4px;z-index:1000;padding:6px 10px;box-shadow:0 8px 32px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.04);}
 .dock-item{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;background:rgba(255,255,255,0.04);position:relative;transition:transform 0.2s cubic-bezier(0.34,1.56,0.64,1),background 0.15s;}
 .dock-item:hover{transform:translateY(-8px) scale(1.15);background:rgba(100,255,218,0.07);}
@@ -36,13 +63,19 @@ body::after{content:'';position:fixed;inset:0;z-index:1;background-image:url("da
 .dock-item:hover .dock-label{opacity:1;transform:translateY(0) scale(1);}
 .dock-sep{width:1px;height:28px;background:rgba(255,255,255,0.07);margin:0 4px;}
 .dock-dot{position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--accent);box-shadow:0 0 6px var(--accent);}
+
+/* ── DESKTOP ICONS ── */
 .desktop-icon{position:absolute;width:74px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;padding:7px;border-radius:10px;transition:background 0.15s;}
 .desktop-icon:hover{background:rgba(100,255,218,0.07);}
 .desktop-icon .icon-img{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:26px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);transition:transform 0.2s;}
 .desktop-icon:hover .icon-img{transform:scale(1.08);}
 .desktop-icon .icon-label{font-size:11px;color:var(--text);text-align:center;line-height:1.3;text-shadow:0 2px 8px rgba(0,0,0,0.9);font-weight:500;}
-.window{position:absolute;background:rgba(19,19,31,0.9);border:1px solid rgba(255,255,255,0.07);border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;min-width:320px;min-height:200px;backdrop-filter:blur(20px) saturate(150%);z-index:100;transition:box-shadow 0.25s;}
-.window.active{box-shadow:var(--shadow),0 0 0 1px rgba(100,255,218,0.1),var(--glow);z-index:200;}
+
+/* ── WINDOWS ── */
+.window{position:absolute;background:rgba(19,19,31,0.92);border:1px solid rgba(255,255,255,0.07);border-radius:var(--radius);box-shadow:var(--shadow);display:flex;flex-direction:column;overflow:hidden;min-width:320px;min-height:200px;backdrop-filter:blur(24px) saturate(160%);z-index:100;transition:box-shadow 0.25s;}
+.window.active{box-shadow:var(--shadow),0 0 0 1px rgba(100,255,218,0.12),var(--glow);z-index:200;}
+@keyframes windowOpen{from{opacity:0;transform:scale(0.93) translateY(12px);}to{opacity:1;transform:scale(1) translateY(0);}}
+.window{animation:windowOpen 0.24s cubic-bezier(0.34,1.2,0.64,1);}
 .titlebar{height:38px;background:rgba(10,10,18,0.85);display:flex;align-items:center;padding:0 12px;gap:8px;cursor:grab;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,0.05);}
 .titlebar:active{cursor:grabbing;}
 .wm-buttons{display:flex;gap:7px;margin-right:4px;}
@@ -53,9 +86,12 @@ body::after{content:'';position:fixed;inset:0;z-index:1;background-image:url("da
 .window-content{flex:1;overflow:auto;}
 .resize-handle{position:absolute;right:0;bottom:0;width:18px;height:18px;cursor:se-resize;opacity:0.2;background:linear-gradient(135deg,transparent 40%,var(--overlay) 40%);}
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-track{background:transparent;}::-webkit-scrollbar-thumb{background:rgba(100,255,218,0.15);border-radius:3px;}
+
+/* ── ABOUT ── */
 .about-content{padding:24px;}
 .about-header{display:flex;align-items:center;gap:18px;margin-bottom:20px;}
-.about-avatar{width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,rgba(100,255,218,0.15),rgba(189,147,249,0.15));display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0;border:2px solid rgba(100,255,218,0.18);box-shadow:0 0 24px rgba(100,255,218,0.08);}
+.about-avatar{width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,rgba(100,255,218,0.15),rgba(189,147,249,0.15));display:flex;align-items:center;justify-content:center;font-size:30px;flex-shrink:0;border:2px solid rgba(100,255,218,0.18);box-shadow:0 0 24px rgba(100,255,218,0.1);animation:avatarPulse 3s ease-in-out infinite;}
+@keyframes avatarPulse{0%,100%{box-shadow:0 0 24px rgba(100,255,218,0.1);}50%{box-shadow:0 0 40px rgba(100,255,218,0.22),0 0 60px rgba(189,147,249,0.08);}}
 .about-name{font-size:20px;font-weight:700;color:var(--text);line-height:1.2;}
 .about-role{font-size:12px;color:var(--accent);font-family:var(--font-mono);margin-top:4px;}
 .about-location{font-size:11.5px;color:var(--subtext);margin-top:3px;}
@@ -69,6 +105,8 @@ body::after{content:'';position:fixed;inset:0;z-index:1;background-image:url("da
 .tag-pink{background:rgba(255,121,198,0.08);color:var(--accent3);border:1px solid rgba(255,121,198,0.14);}
 .tag-orange{background:rgba(255,184,108,0.08);color:var(--orange);border:1px solid rgba(255,184,108,0.14);}
 .tag:hover{transform:translateY(-1px);filter:brightness(1.2);}
+
+/* ── PROJECTS ── */
 .projects-content{padding:14px;display:flex;flex-direction:column;gap:10px;}
 .project-card{background:rgba(26,26,46,0.55);border:1px solid rgba(255,255,255,0.05);border-radius:11px;padding:16px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
 .project-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 55%,rgba(100,255,218,0.025));pointer-events:none;}
@@ -88,11 +126,15 @@ body::after{content:'';position:fixed;inset:0;z-index:1;background-image:url("da
 .proj-lang{font-size:10.5px;font-family:var(--font-mono);color:var(--blue);background:rgba(139,233,253,0.07);padding:2px 8px;border-radius:10px;border:1px solid rgba(139,233,253,0.14);}
 .proj-link{font-size:10.5px;font-family:var(--font-mono);color:var(--accent);background:rgba(100,255,218,0.07);padding:3px 9px;border-radius:10px;border:1px solid rgba(100,255,218,0.14);text-decoration:none;margin-left:auto;transition:all 0.15s;}
 .proj-link:hover{background:rgba(100,255,218,0.13);border-color:rgba(100,255,218,0.28);}
+
+/* ── TERMINAL ── */
 .terminal-content{background:#060610;padding:14px 16px;font-family:var(--font-mono);font-size:12.5px;line-height:1.75;height:100%;overflow-y:auto;}
 .term-line{display:flex;flex-wrap:wrap;align-items:baseline;}
 .term-prompt{color:var(--accent);font-weight:500;}.term-at{color:var(--muted);}.term-host{color:var(--accent2);}.term-sym{color:var(--muted);margin-right:6px;}.term-cmd{color:var(--text);}.term-out{color:var(--subtext);}.term-ok{color:var(--green);}.term-err{color:var(--red);}
 .term-cursor{display:inline-block;width:7px;height:13px;background:var(--accent);vertical-align:bottom;animation:blink 1.1s step-end infinite;margin-left:1px;box-shadow:0 0 8px var(--accent);}
 @keyframes blink{50%{opacity:0;}}
+
+/* ── LINKS ── */
 .links-content{padding:16px;display:flex;flex-direction:column;gap:8px;}
 .link-row{display:flex;align-items:center;gap:12px;padding:12px 14px;background:rgba(26,26,46,0.55);border:1px solid rgba(255,255,255,0.05);border-radius:10px;cursor:pointer;text-decoration:none;transition:all 0.2s;}
 .link-row:hover{border-color:rgba(100,255,218,0.18);background:rgba(100,255,218,0.035);transform:translateX(2px);}
@@ -100,22 +142,22 @@ body::after{content:'';position:fixed;inset:0;z-index:1;background-image:url("da
 .link-info{flex:1;}.link-name{font-size:13px;font-weight:600;color:var(--text);}.link-url{font-size:11px;color:var(--muted);font-family:var(--font-mono);margin-top:1px;}
 .link-arrow{color:var(--muted);font-size:16px;transition:color 0.15s;}.link-row:hover .link-arrow{color:var(--accent);}
 
-/* ── BLOG UPGRADED ── */
+/* ── BLOG ── */
 .blog-content{padding:14px;display:flex;flex-direction:column;gap:0;}
 .blog-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.05);}
 .blog-filter-btn{font-size:10.5px;font-family:var(--font-mono);font-weight:500;padding:3px 11px;border-radius:20px;cursor:pointer;border:1px solid rgba(255,255,255,0.08);color:var(--subtext);background:transparent;transition:all 0.18s;}
 .blog-filter-btn:hover,.blog-filter-btn.active{color:var(--accent);border-color:rgba(100,255,218,0.3);background:rgba(100,255,218,0.07);}
 .blog-filter-btn.active{font-weight:700;}
 .blog-posts-list{display:flex;flex-direction:column;gap:8px;}
-.blog-post{padding:14px 16px;background:rgba(26,26,46,0.55);border:1px solid rgba(255,255,255,0.05);border-radius:10px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
+.blog-post{padding:14px 16px;background:rgba(26,26,46,0.55);border:1px solid rgba(255,255,255,0.05);border-radius:10px;cursor:pointer;transition:all 0.22s;position:relative;overflow:hidden;}
 .blog-post::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:3px 0 0 3px;opacity:0;transition:opacity 0.2s;}
 .blog-post.cat-sec::before{background:var(--red);}
 .blog-post.cat-dev::before{background:var(--accent);}
 .blog-post.cat-civic::before{background:var(--orange);}
-.blog-post:hover{transform:translateY(-1px);}
-.blog-post.cat-sec:hover{border-color:rgba(255,85,85,0.22);background:rgba(255,85,85,0.04);}
-.blog-post.cat-dev:hover{border-color:rgba(100,255,218,0.22);background:rgba(100,255,218,0.04);}
-.blog-post.cat-civic:hover{border-color:rgba(255,184,108,0.22);background:rgba(255,184,108,0.04);}
+.blog-post:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,0,0,0.35);}
+.blog-post.cat-sec:hover{border-color:rgba(255,85,85,0.25);background:rgba(255,85,85,0.05);}
+.blog-post.cat-dev:hover{border-color:rgba(100,255,218,0.25);background:rgba(100,255,218,0.05);}
+.blog-post.cat-civic:hover{border-color:rgba(255,184,108,0.25);background:rgba(255,184,108,0.05);}
 .blog-post:hover::before{opacity:1;}
 .blog-date{font-size:10.5px;font-family:var(--font-mono);color:var(--muted);margin-bottom:5px;}
 .blog-title{font-size:13.5px;font-weight:700;color:var(--text);line-height:1.35;margin-bottom:5px;}
@@ -129,16 +171,51 @@ body::after{content:'';position:fixed;inset:0;z-index:1;background-image:url("da
 .blog-read-time{margin-left:auto;font-size:10px;font-family:var(--font-mono);color:var(--muted);}
 .blog-post.hidden{display:none;}
 
+/* ── ARTICLE VIEWER WINDOW ── */
+.article-content{padding:24px;font-size:13px;line-height:1.8;color:var(--subtext);}
+.article-content h1{font-size:18px;color:var(--text);font-weight:700;margin-bottom:6px;line-height:1.3;}
+.article-content .art-meta{font-family:var(--font-mono);font-size:11px;color:var(--muted);margin-bottom:18px;display:flex;gap:10px;flex-wrap:wrap;}
+.article-content .art-divider{height:1px;background:rgba(255,255,255,0.05);margin:16px 0;}
+.article-content p{margin-bottom:12px;}
+.article-content strong{color:var(--text);}
+.article-content code{font-family:var(--font-mono);font-size:11.5px;background:rgba(100,255,218,0.07);color:var(--accent);padding:1px 6px;border-radius:4px;}
+.article-content .art-tip{background:rgba(100,255,218,0.05);border-left:3px solid var(--accent);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0;font-size:12px;}
+.article-content .art-warning{background:rgba(255,85,85,0.05);border-left:3px solid var(--red);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0;font-size:12px;color:var(--subtext);}
+
+/* ── NOTIFICATION ── */
 #notif{position:fixed;top:42px;right:16px;background:rgba(19,19,31,0.96);border:1px solid rgba(100,255,218,0.1);border-radius:12px;padding:12px 16px;box-shadow:0 16px 40px rgba(0,0,0,0.6),0 0 0 1px rgba(100,255,218,0.04);z-index:2000;font-size:12.5px;max-width:270px;transform:translateX(320px);transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none;backdrop-filter:blur(20px);}
 #notif.show{transform:translateX(0);}
-#notif .notif-icon{font-size:18px;margin-bottom:5px;}#notif .notif-title{font-weight:700;color:var(--text);margin-bottom:3px;}#notif .notif-msg{color:var(--subtext);font-size:12px;line-height:1.5;}
+#notif .notif-icon{font-size:18px;margin-bottom:5px;}
+#notif .notif-title{font-weight:700;color:var(--text);margin-bottom:3px;}
+#notif .notif-msg{color:var(--subtext);font-size:12px;line-height:1.5;}
 #clock{font-family:var(--font-mono);font-size:12px;color:var(--subtext);letter-spacing:0.5px;}
-@keyframes fadeInScale{from{opacity:0;transform:scale(0.95) translateY(10px);}to{opacity:1;transform:scale(1) translateY(0);}}
-.window{animation:fadeInScale 0.22s cubic-bezier(0.34,1.2,0.64,1);}
+
+/* ── GLITCH TEXT ── */
+@keyframes glitch1{0%,90%,100%{clip-path:inset(0 0 100% 0)}5%{clip-path:inset(30% 0 55% 0);transform:translate(-2px)}10%{clip-path:inset(70% 0 10% 0);transform:translate(2px)}15%{clip-path:inset(0 0 100% 0)}}
+@keyframes glitch2{0%,90%,100%{clip-path:inset(0 0 100% 0)}7%{clip-path:inset(50% 0 30% 0);transform:translate(2px)}12%{clip-path:inset(10% 0 80% 0);transform:translate(-2px)}17%{clip-path:inset(0 0 100% 0)}}
+.glitch-wrap{position:relative;display:inline-block;}
+.glitch-wrap::before,.glitch-wrap::after{content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%;font-size:inherit;font-weight:inherit;}
+.glitch-wrap::before{color:var(--accent3);animation:glitch1 6s infinite;}
+.glitch-wrap::after{color:var(--blue);animation:glitch2 6s infinite 0.05s;}
 </style>
 </head>
 <body>
-<div id="wallpaper"><canvas id="bg-canvas"></canvas></div>
+
+<!-- WALLPAPER -->
+<div id="wallpaper">
+  <canvas id="bg-canvas"></canvas>
+  <div id="aurora">
+    <div class="aurora-blob" style="width:500px;height:500px;background:radial-gradient(circle,rgba(100,255,218,0.13),transparent 70%);top:10%;left:5%;--tx:80px;--ty:60px;--sc:1.2;animation-duration:18s;animation-delay:0s;"></div>
+    <div class="aurora-blob" style="width:600px;height:400px;background:radial-gradient(circle,rgba(189,147,249,0.1),transparent 70%);top:50%;right:5%;--tx:-60px;--ty:-80px;--sc:1.15;animation-duration:22s;animation-delay:-6s;"></div>
+    <div class="aurora-blob" style="width:400px;height:500px;background:radial-gradient(circle,rgba(255,121,198,0.07),transparent 70%);bottom:10%;left:40%;--tx:40px;--ty:-60px;--sc:1.1;animation-duration:26s;animation-delay:-12s;"></div>
+    <div class="aurora-blob" style="width:300px;height:300px;background:radial-gradient(circle,rgba(241,250,140,0.05),transparent 70%);top:30%;left:50%;--tx:-50px;--ty:80px;--sc:1.3;animation-duration:20s;animation-delay:-4s;"></div>
+  </div>
+</div>
+<div class="scanline"></div>
+<div id="grid-overlay"></div>
+<div id="noise"></div>
+
+<!-- TOPBAR -->
 <div id="topbar">
   <div class="tb-left">
     <span class="tb-appname">⚔️ Portfolio OS</span>
@@ -148,13 +225,15 @@ body::after{content:'';position:fixed;inset:0;z-index:1;background-image:url("da
     <span class="tb-menu" onclick="openWindow('links')">Links</span>
     <span class="tb-menu" onclick="openWindow('blog')">Blog</span>
   </div>
-  <div class="tb-center">CodeBerserkers888</div>
+  <div class="tb-center"><span class="glitch-wrap" data-text="CodeBerserkers888">CodeBerserkers888</span></div>
   <div class="tb-right">
     <span style="color:var(--green);font-size:10px">● online</span>
     <span>🔋 98%</span>
     <span id="clock"></span>
   </div>
 </div>
+
+<!-- DESKTOP -->
 <div id="desktop">
   <div class="desktop-icon" style="top:16px;left:16px" onclick="openWindow('about')"><div class="icon-img">👤</div><div class="icon-label">About Me</div></div>
   <div class="desktop-icon" style="top:106px;left:16px" onclick="openWindow('projects')"><div class="icon-img">🗂️</div><div class="icon-label">Projects</div></div>
@@ -256,89 +335,81 @@ body::after{content:'';position:fixed;inset:0;z-index:1;background-image:url("da
     <div class="resize-handle" onmousedown="startResize(event,'win-links')"></div>
   </div>
 
-  <!-- BLOG — UPGRADED -->
-  <div class="window" id="win-blog" style="width:490px;height:520px;top:50px;left:570px;display:none">
+  <!-- BLOG -->
+  <div class="window" id="win-blog" style="width:500px;height:540px;top:50px;left:570px;display:none">
     <div class="titlebar" onmousedown="startDrag(event,'win-blog')">
       <div class="wm-buttons"><div class="wm-btn wm-close" onclick="closeWindow('blog')"></div><div class="wm-btn wm-min" onclick="minWindow('blog')"></div><div class="wm-btn wm-max" onclick="maxWindow(event,'win-blog')"></div></div>
       <span>📝</span><span class="titlebar-title">Blog / Articles</span>
     </div>
     <div class="window-content"><div class="blog-content">
-
       <div class="blog-filters">
         <button class="blog-filter-btn active" onclick="filterBlog('all',this)">All</button>
         <button class="blog-filter-btn" onclick="filterBlog('sec',this)">🔴 Security</button>
         <button class="blog-filter-btn" onclick="filterBlog('dev',this)">🟢 Dev</button>
         <button class="blog-filter-btn" onclick="filterBlog('civic',this)">🟠 Civic Tech</button>
       </div>
-
       <div class="blog-posts-list">
 
-        <div class="blog-post cat-sec" onclick="notify('Full article coming soon!','🔒 Security')">
+        <div class="blog-post cat-sec" onclick="openArticle('scam-norway')">
           <div class="blog-date">2025 · 04 · 02</div>
           <div class="blog-title">How Scammers Target Immigrants in Norway — And How to Fight Back</div>
-          <div class="blog-excerpt">A deep-dive into social engineering tactics used to exploit newcomers: fake job offers, housing scams, and vishing attacks — with practical defenses.</div>
-          <div class="blog-footer">
-            <span class="blog-tag t-sec">#phishing</span><span class="blog-tag t-sec">#social-engineering</span><span class="blog-tag t-civic">#norway</span>
-            <span class="blog-read-time">8 min read</span>
-          </div>
+          <div class="blog-excerpt">A deep-dive into social engineering tactics used to exploit newcomers: fake job offers, housing scams, and vishing attacks.</div>
+          <div class="blog-footer"><span class="blog-tag t-sec">#phishing</span><span class="blog-tag t-sec">#social-engineering</span><span class="blog-tag t-civic">#norway</span><span class="blog-read-time">8 min read</span></div>
         </div>
 
-        <div class="blog-post cat-dev" onclick="notify('Full article coming soon!','⚙️ Dev')">
+        <div class="blog-post cat-dev" onclick="openArticle('svindelsjekk-arch')">
           <div class="blog-date">2025 · 03 · 18</div>
           <div class="blog-title">Building SvindelSjekk: Architecture of a Real-Time Fraud Checker</div>
-          <div class="blog-excerpt">Behind the scenes of svindelsjekk.no — how I combined public APIs, regex heuristics, and community reports into a usable safety tool for Norwegian users.</div>
-          <div class="blog-footer">
-            <span class="blog-tag t-dev">#open-source</span><span class="blog-tag t-dev">#node.js</span><span class="blog-tag t-sec">#security</span>
-            <span class="blog-read-time">12 min read</span>
-          </div>
+          <div class="blog-excerpt">Behind the scenes of svindelsjekk.no — combining public APIs, regex heuristics, and community reports into a safety tool.</div>
+          <div class="blog-footer"><span class="blog-tag t-dev">#open-source</span><span class="blog-tag t-dev">#node.js</span><span class="blog-tag t-sec">#security</span><span class="blog-read-time">12 min read</span></div>
         </div>
 
-        <div class="blog-post cat-sec" onclick="notify('Full article coming soon!','🔒 Security')">
+        <div class="blog-post cat-sec" onclick="openArticle('osint-budget')">
           <div class="blog-date">2025 · 02 · 27</div>
           <div class="blog-title">OSINT on a Budget: Free Tools Every Developer Should Know</div>
           <div class="blog-excerpt">Shodan, theHarvester, Maltego CE — a practical toolkit for open-source intelligence gathering without spending a single krone.</div>
-          <div class="blog-footer">
-            <span class="blog-tag t-sec">#osint</span><span class="blog-tag t-dev">#tools</span><span class="blog-tag t-purple">#privacy</span>
-            <span class="blog-read-time">10 min read</span>
-          </div>
+          <div class="blog-footer"><span class="blog-tag t-sec">#osint</span><span class="blog-tag t-dev">#tools</span><span class="blog-tag t-purple">#privacy</span><span class="blog-read-time">10 min read</span></div>
         </div>
 
-        <div class="blog-post cat-civic" onclick="notify('Full article coming soon!','🌍 Civic Tech')">
+        <div class="blog-post cat-civic" onclick="openArticle('code-civic')">
           <div class="blog-date">2025 · 02 · 10</div>
           <div class="blog-title">Code as Civic Action: Why Developers Should Build for the Public Good</div>
-          <div class="blog-excerpt">From anti-scam tools to digital literacy resources — a personal take on how open-source can serve vulnerable communities and change lives.</div>
-          <div class="blog-footer">
-            <span class="blog-tag t-civic">#civic-tech</span><span class="blog-tag t-civic">#digital-rights</span><span class="blog-tag t-purple">#open-source</span>
-            <span class="blog-read-time">7 min read</span>
-          </div>
+          <div class="blog-excerpt">From anti-scam tools to digital literacy resources — a personal take on how open-source can serve vulnerable communities.</div>
+          <div class="blog-footer"><span class="blog-tag t-civic">#civic-tech</span><span class="blog-tag t-civic">#digital-rights</span><span class="blog-tag t-purple">#open-source</span><span class="blog-read-time">7 min read</span></div>
         </div>
 
-        <div class="blog-post cat-dev" onclick="notify('Full article coming soon!','⚙️ Dev')">
+        <div class="blog-post cat-dev" onclick="openArticle('secure-js')">
           <div class="blog-date">2025 · 01 · 22</div>
           <div class="blog-title">Writing Secure JavaScript: Mistakes I Made and How I Fixed Them</div>
-          <div class="blog-excerpt">XSS, prototype pollution, insecure dependencies — real examples from my own projects with before/after refactors and hard lessons learned.</div>
-          <div class="blog-footer">
-            <span class="blog-tag t-dev">#javascript</span><span class="blog-tag t-sec">#appsec</span><span class="blog-tag t-dev">#best-practices</span>
-            <span class="blog-read-time">14 min read</span>
-          </div>
+          <div class="blog-excerpt">XSS, prototype pollution, insecure dependencies — real examples from my own projects with before/after refactors.</div>
+          <div class="blog-footer"><span class="blog-tag t-dev">#javascript</span><span class="blog-tag t-sec">#appsec</span><span class="blog-tag t-dev">#best-practices</span><span class="blog-read-time">14 min read</span></div>
         </div>
 
-        <div class="blog-post cat-civic" onclick="notify('Full article coming soon!','🌍 Civic Tech')">
+        <div class="blog-post cat-civic" onclick="openArticle('digital-inclusion')">
           <div class="blog-date">2024 · 12 · 14</div>
           <div class="blog-title">Digital Inclusion in Scandinavia: Who Gets Left Behind?</div>
-          <div class="blog-excerpt">As Norway pushes toward fully digital public services, elderly, migrant, and low-income groups risk being locked out. What can developers do?</div>
-          <div class="blog-footer">
-            <span class="blog-tag t-civic">#inclusion</span><span class="blog-tag t-civic">#accessibility</span><span class="blog-tag t-civic">#norway</span>
-            <span class="blog-read-time">9 min read</span>
-          </div>
+          <div class="blog-excerpt">As Norway pushes toward fully digital public services, elderly, migrant, and low-income groups risk being locked out.</div>
+          <div class="blog-footer"><span class="blog-tag t-civic">#inclusion</span><span class="blog-tag t-civic">#accessibility</span><span class="blog-tag t-civic">#norway</span><span class="blog-read-time">9 min read</span></div>
         </div>
 
       </div>
     </div></div>
     <div class="resize-handle" onmousedown="startResize(event,'win-blog')"></div>
   </div>
-</div>
 
+  <!-- ARTICLE VIEWER -->
+  <div class="window" id="win-article" style="width:520px;height:500px;top:60px;left:200px;display:none">
+    <div class="titlebar" onmousedown="startDrag(event,'win-article')">
+      <div class="wm-buttons"><div class="wm-btn wm-close" onclick="closeWindow('article')"></div><div class="wm-btn wm-min" onclick="minWindow('article')"></div><div class="wm-btn wm-max" onclick="maxWindow(event,'win-article')"></div></div>
+      <span>📄</span><span class="titlebar-title" id="article-win-title">Article</span>
+    </div>
+    <div class="window-content"><div class="article-content" id="article-body"></div></div>
+    <div class="resize-handle" onmousedown="startResize(event,'win-article')"></div>
+  </div>
+
+</div><!-- /desktop -->
+
+<!-- DOCK -->
 <div id="dock">
   <div class="dock-item" onclick="openWindow('about')">👤<div class="dock-label">About Me</div><div class="dock-dot" id="dot-about"></div></div>
   <div class="dock-item" onclick="openWindow('projects')">🗂️<div class="dock-label">Projects</div><div class="dock-dot" id="dot-projects" style="display:none"></div></div>
@@ -359,52 +430,268 @@ body::after{content:'';position:fixed;inset:0;z-index:1;background-image:url("da
 </div>
 
 <script>
+// ── CLOCK ──
 function updateClock(){const n=new Date(),days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],p=x=>String(x).padStart(2,'0');document.getElementById('clock').textContent=`${days[n.getDay()]} ${p(n.getHours())}:${p(n.getMinutes())}`;}
 updateClock();setInterval(updateClock,10000);
 document.getElementById('term-login-date').textContent=new Date().toDateString()+'  '+new Date().toLocaleTimeString();
 
+// ── CANVAS PARTICLES ──
 (function(){
   const c=document.getElementById('bg-canvas'),ctx=c.getContext('2d');let W,H;
   function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
   resize();window.addEventListener('resize',resize);
-  const dots=Array.from({length:55},()=>({x:Math.random()*1920,y:Math.random()*1080,vx:(Math.random()-.5)*.28,vy:(Math.random()-.5)*.28,r:Math.random()*1.4+.4,a:Math.random()*.5+.15,c:Math.random()<.5?'100,255,218':'189,147,249'}));
-  function draw(){ctx.clearRect(0,0,W,H);dots.forEach(d=>{d.x+=d.vx;d.y+=d.vy;if(d.x<0)d.x=W;if(d.x>W)d.x=0;if(d.y<0)d.y=H;if(d.y>H)d.y=0;ctx.beginPath();ctx.arc(d.x,d.y,d.r,0,Math.PI*2);ctx.fillStyle=`rgba(${d.c},${d.a})`;ctx.fill();});for(let i=0;i<dots.length;i++)for(let j=i+1;j<dots.length;j++){const dx=dots[i].x-dots[j].x,dy=dots[i].y-dots[j].y,dist=Math.hypot(dx,dy);if(dist<110){ctx.beginPath();ctx.moveTo(dots[i].x,dots[i].y);ctx.lineTo(dots[j].x,dots[j].y);ctx.strokeStyle=`rgba(100,255,218,${.038*(1-dist/110)})`;ctx.lineWidth=.5;ctx.stroke();}}requestAnimationFrame(draw);}
+  const dots=Array.from({length:70},()=>({
+    x:Math.random()*1920,y:Math.random()*1080,
+    vx:(Math.random()-.5)*.22,vy:(Math.random()-.5)*.22,
+    r:Math.random()*1.6+.3,a:Math.random()*.45+.1,
+    c:['100,255,218','189,147,249','255,121,198','139,233,253'][Math.floor(Math.random()*4)]
+  }));
+  // Mouse repulsion
+  let mx=-1,my=-1;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    dots.forEach(d=>{
+      // repel from mouse
+      const dx=d.x-mx,dy=d.y-my,dist=Math.hypot(dx,dy);
+      if(dist<120&&dist>0){const f=((120-dist)/120)*0.4;d.vx+=f*dx/dist;d.vy+=f*dy/dist;}
+      d.vx*=0.995;d.vy*=0.995;
+      d.x+=d.vx;d.y+=d.vy;
+      if(d.x<0)d.x=W;if(d.x>W)d.x=0;if(d.y<0)d.y=H;if(d.y>H)d.y=0;
+      ctx.beginPath();ctx.arc(d.x,d.y,d.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(${d.c},${d.a})`;ctx.fill();
+    });
+    for(let i=0;i<dots.length;i++)for(let j=i+1;j<dots.length;j++){
+      const dx=dots[i].x-dots[j].x,dy=dots[i].y-dots[j].y,dist=Math.hypot(dx,dy);
+      if(dist<120){
+        ctx.beginPath();ctx.moveTo(dots[i].x,dots[i].y);ctx.lineTo(dots[j].x,dots[j].y);
+        ctx.strokeStyle=`rgba(100,255,218,${.04*(1-dist/120)})`;ctx.lineWidth=.5;ctx.stroke();
+      }
+    }
+    requestAnimationFrame(draw);
+  }
   draw();
 })();
 
+// ── BLOG FILTER ──
 function filterBlog(cat,btn){
   document.querySelectorAll('.blog-filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   document.querySelectorAll('.blog-post').forEach(post=>{
-    (cat==='all'||post.classList.contains('cat-'+cat))?post.classList.remove('hidden'):post.classList.add('hidden');
+    const show=cat==='all'||post.classList.contains('cat-'+cat);
+    post.classList.toggle('hidden',!show);
+    if(show){post.style.animation='none';post.offsetHeight;post.style.animation='postReveal 0.3s ease both';}
   });
 }
 
-const wins={about:true,projects:false,terminal:false,links:false,blog:false};
-function openWindow(name){const el=document.getElementById('win-'+name);if(!el)return;el.style.display='flex';wins[name]=true;focusWindow('win-'+name);const dot=document.getElementById('dot-'+name);if(dot)dot.style.display='block';if(name==='terminal')startTyping();}
-function closeWindow(name){const el=document.getElementById('win-'+name);if(!el)return;el.style.display='none';wins[name]=false;const dot=document.getElementById('dot-'+name);if(dot)dot.style.display='none';}
+// ── ARTICLE DATA ──
+const articles={
+  'scam-norway':{
+    title:'How Scammers Target Immigrants in Norway',
+    meta:['🔴 Security','2025 · 04 · 02','8 min read'],
+    body:`<p>Norway is a high-trust society — and scammers exploit that trust aggressively, especially targeting newcomers who may not yet know the local norms.</p>
+<div class="art-warning">⚠️ This article documents real attack patterns. None of the techniques described should be used maliciously.</div>
+<p>The most common vectors I've seen reported by immigrant communities include <strong>fake job offers</strong> (often on Facebook Groups), <strong>housing scams</strong> that collect deposits for apartments that don't exist, and sophisticated <strong>vishing (voice phishing)</strong> calls impersonating NAV or the police.</p>
+<div class="art-tip">🛡️ Always verify job offers via Finn.no directly. If someone asks for payment before you start work — it's a scam.</div>
+<p>I built <strong>SvindelSjekk.no</strong> specifically to address this. Users can paste any suspicious URL, phone number, or email and get an instant risk assessment based on public fraud databases and heuristic analysis.</p>
+<p>The technical architecture uses a combination of <code>VirusTotal API</code>, phone number reputation databases, and a community-maintained blocklist that anyone can contribute to.</p>
+<p>If you've encountered a scam in Norway, please report it at <code>Politiet.no</code> and add the data to our open database via GitHub.</p>`
+  },
+  'svindelsjekk-arch':{
+    title:'Building SvindelSjekk: Architecture',
+    meta:['🟢 Dev','2025 · 03 · 18','12 min read'],
+    body:`<p><strong>SvindelSjekk.no</strong> started as a weekend project and became my most-used open source tool. Here's how it's built.</p>
+<p>The core is a <code>Node.js</code> + <code>Express</code> API that orchestrates calls to multiple external sources: VirusTotal, Google Safe Browsing, and a self-maintained MongoDB collection of reported Norwegian scam numbers.</p>
+<div class="art-tip">💡 The free tier of VirusTotal gives you 4 requests/minute. I built a local caching layer that cuts API calls by ~70%.</div>
+<p>For phone number lookups, there's no perfect free API for Norway. I ended up combining <code>numverify</code> for basic carrier data with a community-sourced JSON file of known scam numbers, updated via GitHub PRs from users.</p>
+<p>The frontend is intentionally minimal — a single input field, an instant result card. Speed matters more than aesthetics when someone is about to click a suspicious link.</p>
+<div class="art-warning">🔒 All user queries are anonymized. No IPs or identifiers are stored. Privacy by design, not as an afterthought.</div>
+<p>The whole stack is open source. Contributions welcome at <code>github.com/CodeBerserkers888/SvindelSjekk</code>.</p>`
+  },
+  'osint-budget':{
+    title:'OSINT on a Budget: Free Tools Every Dev Should Know',
+    meta:['🔴 Security','2025 · 02 · 27','10 min read'],
+    body:`<p>You don't need a corporate budget to do meaningful open-source intelligence gathering. Here's my go-to free toolkit.</p>
+<p><strong>Shodan</strong> — the search engine for internet-connected devices. Free accounts can run 3 searches/day. That's enough to check whether a company's infrastructure is exposing services it shouldn't be.</p>
+<div class="art-tip">🔍 Try searching <code>org:"Company Name" port:22</code> to find exposed SSH ports for any organization.</div>
+<p><strong>theHarvester</strong> — collects emails, subdomains, hosts, and employee names from public sources. Runs locally, no API key needed for basic use. Essential for recon.</p>
+<p><strong>Maltego CE</strong> — the free community edition still gives you powerful graph-based OSINT. Slower than the paid version, but absolutely sufficient for personal research and learning.</p>
+<p><strong>OSINT Framework</strong> (osintframework.com) — a curated tree of free OSINT tools organized by category. Bookmark it.</p>
+<div class="art-warning">⚖️ Always ensure your OSINT activities are legal in your jurisdiction and targeted at systems/people you have permission to research.</div>
+<p>The most powerful OSINT tool is still patience and methodical thinking. Tools just automate what a careful human analyst would do manually.</p>`
+  },
+  'code-civic':{
+    title:'Code as Civic Action',
+    meta:['🟠 Civic Tech','2025 · 02 · 10','7 min read'],
+    body:`<p>I've been asked many times why I give my code away for free. The honest answer: I don't see an alternative that aligns with my values.</p>
+<p>The people who most need protection from online scams — elderly Norwegians, recent immigrants, people with limited digital literacy — are exactly the people who can't afford premium security tools. If I charge for the tools I build, I'm choosing profit over the people I claim to be helping.</p>
+<div class="art-tip">🌍 Open source isn't just a licensing choice. It's a political statement about who gets to benefit from technology.</div>
+<p>Civic tech is technology built in service of communities rather than in service of capital. It's SvindelSjekk.no. It's Wikipedia. It's Signal. It's the entire Free Software movement.</p>
+<p>What can you do? Start small. The next time you build something that solves a problem you have, ask: <strong>who else has this problem and can't solve it themselves?</strong> Then make your code available to them.</p>
+<p>The world has enough SaaS dashboards. It needs more tools that protect people.</p>`
+  },
+  'secure-js':{
+    title:'Writing Secure JavaScript: My Mistakes',
+    meta:['🟢 Dev','2025 · 01 · 22','14 min read'],
+    body:`<p>I've written a lot of JavaScript. I've also introduced a lot of security vulnerabilities. Here are the real ones, how I found them, and how I fixed them.</p>
+<p><strong>XSS via innerHTML</strong> — I used <code>element.innerHTML = userInput</code> in an early version of SvindelSjekk's result display. Never do this. Use <code>textContent</code> or a proper sanitization library like DOMPurify.</p>
+<div class="art-warning">🚨 <code>innerHTML</code> with user-controlled data is an XSS vector. Always. No exceptions.</div>
+<p><strong>Prototype pollution</strong> — I was using <code>_.merge()</code> from an old version of lodash without checking for <code>__proto__</code> keys in user input. Updated to lodash 4.17.21+ and added input validation upstream.</p>
+<p><strong>Insecure dependencies</strong> — <code>npm audit</code> found 3 high-severity vulnerabilities in transitive dependencies I'd never even heard of. Now I run <code>npm audit</code> in CI and block merges that introduce new high/critical findings.</p>
+<div class="art-tip">💡 Run <code>npx snyk test</code> on any project you're about to deploy. It catches things npm audit misses.</div>
+<p>Security isn't a feature you bolt on. It's a habit you build through continuous review, automated tooling, and — most importantly — accepting that you will make mistakes and building processes to catch them.</p>`
+  },
+  'digital-inclusion':{
+    title:'Digital Inclusion in Scandinavia',
+    meta:['🟠 Civic Tech','2024 · 12 · 14','9 min read'],
+    body:`<p>Norway ranks among the world's most digitally advanced countries. It also risks leaving significant portions of its population behind as public services move entirely online.</p>
+<p>I've spoken with immigrants who can't access their NAV benefits online because the ID verification system doesn't recognize their country's identity documents. I've met elderly Norwegians who've lost access to banking services because their local branch closed and they've never used an app.</p>
+<div class="art-warning">📊 An estimated 8% of Norwegians still lack basic digital skills, according to Statistics Norway (2023).</div>
+<p>The cruel irony is that the people who most need government support are often the people least able to access it digitally. Digital-first becomes digital-only, and that exclusion has real human costs.</p>
+<div class="art-tip">🛠️ What can developers do? Build with accessibility as a baseline, not an afterthought. Support organizations like <strong>Digihjelpen</strong> that provide free digital assistance. Advocate for offline fallbacks in public systems.</div>
+<p>Technology should expand access, not restrict it. Every design decision we make either includes or excludes someone. Choose carefully.</p>`
+  }
+};
+
+function openArticle(id){
+  const art=articles[id];if(!art)return;
+  document.getElementById('article-win-title').textContent=art.title.substring(0,35)+'…';
+  document.getElementById('article-body').innerHTML=`
+    <h1>${art.title}</h1>
+    <div class="art-meta">${art.meta.map(m=>`<span>${m}</span>`).join('<span style="color:var(--muted)">·</span>')}</div>
+    <div class="art-divider"></div>
+    ${art.body}`;
+  openWindow('article');
+}
+
+// ── WINDOW MANAGEMENT ──
+const wins={about:true,projects:false,terminal:false,links:false,blog:false,article:false};
+function openWindow(name){
+  const el=document.getElementById('win-'+name);
+  if(!el)return;
+  el.style.display='flex';
+  wins[name]=true;
+  focusWindow('win-'+name);
+  const dot=document.getElementById('dot-'+name);
+  if(dot)dot.style.display='block';
+  if(name==='terminal')startTyping();
+}
+function closeWindow(name){
+  const el=document.getElementById('win-'+name);
+  if(!el)return;
+  el.style.animation='none';
+  el.style.opacity='0';
+  el.style.transform='scale(0.95)';
+  el.style.transition='opacity 0.15s,transform 0.15s';
+  setTimeout(()=>{el.style.display='none';el.style.opacity='';el.style.transform='';el.style.transition='';el.style.animation='';},150);
+  wins[name]=false;
+  const dot=document.getElementById('dot-'+name);
+  if(dot)dot.style.display='none';
+}
 function minWindow(name){closeWindow(name);}
-function maxWindow(e,id){const el=document.getElementById(id);if(el._maxed){Object.assign(el.style,el._prev);el._prev=null;el._maxed=false;el.style.borderRadius='';}else{el._prev={width:el.style.width,height:el.style.height,top:el.style.top,left:el.style.left};Object.assign(el.style,{width:'100%',height:'100%',top:'0',left:'0',borderRadius:'0'});el._maxed=true;}}
-function focusWindow(id){document.querySelectorAll('.window').forEach(w=>{w.classList.remove('active');w.style.zIndex=100;});const el=document.getElementById(id);if(el){el.classList.add('active');el.style.zIndex=200;}}
+function maxWindow(e,id){
+  const el=document.getElementById(id);
+  if(el._maxed){Object.assign(el.style,el._prev);el._prev=null;el._maxed=false;el.style.borderRadius='';}
+  else{el._prev={width:el.style.width,height:el.style.height,top:el.style.top,left:el.style.left};Object.assign(el.style,{width:'100%',height:'100%',top:'0',left:'0',borderRadius:'0'});el._maxed=true;}
+}
+function focusWindow(id){
+  document.querySelectorAll('.window').forEach(w=>{w.classList.remove('active');w.style.zIndex=100;});
+  const el=document.getElementById(id);
+  if(el){el.classList.add('active');el.style.zIndex=200;}
+}
 document.querySelectorAll('.window').forEach(w=>{w.addEventListener('mousedown',()=>focusWindow(w.id));});
 
-function startDrag(e,id){if(e.target.classList.contains('wm-btn'))return;const el=document.getElementById(id);if(el._maxed)return;focusWindow(id);const ox=e.clientX-el.offsetLeft,oy=e.clientY-el.offsetTop;const onMove=e=>{el.style.left=Math.max(0,e.clientX-ox)+'px';el.style.top=Math.max(32,e.clientY-oy)+'px';};const onUp=()=>{document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);};document.addEventListener('mousemove',onMove);document.addEventListener('mouseup',onUp);}
-function startResize(e,id){e.stopPropagation();const el=document.getElementById(id),sx=e.clientX,sy=e.clientY,sw=el.offsetWidth,sh=el.offsetHeight;const onMove=e=>{el.style.width=Math.max(300,sw+e.clientX-sx)+'px';el.style.height=Math.max(200,sh+e.clientY-sy)+'px';};const onUp=()=>{document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);};document.addEventListener('mousemove',onMove);document.addEventListener('mouseup',onUp);}
+function startDrag(e,id){
+  if(e.target.classList.contains('wm-btn'))return;
+  const el=document.getElementById(id);if(el._maxed)return;
+  focusWindow(id);
+  const ox=e.clientX-el.offsetLeft,oy=e.clientY-el.offsetTop;
+  const onMove=e=>{el.style.left=Math.max(0,e.clientX-ox)+'px';el.style.top=Math.max(32,e.clientY-oy)+'px';};
+  const onUp=()=>{document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);};
+  document.addEventListener('mousemove',onMove);document.addEventListener('mouseup',onUp);
+}
+function startResize(e,id){
+  e.stopPropagation();
+  const el=document.getElementById(id),sx=e.clientX,sy=e.clientY,sw=el.offsetWidth,sh=el.offsetHeight;
+  const onMove=e=>{el.style.width=Math.max(300,sw+e.clientX-sx)+'px';el.style.height=Math.max(200,sh+e.clientY-sy)+'px';};
+  const onUp=()=>{document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);};
+  document.addEventListener('mousemove',onMove);document.addEventListener('mouseup',onUp);
+}
 
+// ── NOTIFICATION ──
 let notifTimer;
-function notify(msg,title='⚔️ Portfolio OS'){const el=document.getElementById('notif');const icon=([...title.matchAll(/\p{Emoji}/gu)][0]||['💬'])[0];document.getElementById('notif-icon').textContent=icon;document.getElementById('notif-title').textContent=title.replace(/^\S+\s*/,'');document.getElementById('notif-msg').textContent=msg;el.classList.add('show');clearTimeout(notifTimer);notifTimer=setTimeout(()=>el.classList.remove('show'),3500);}
+function notify(msg,title='⚔️ Portfolio OS'){
+  const el=document.getElementById('notif');
+  const icon=([...title.matchAll(/\p{Emoji}/gu)][0]||['💬'])[0];
+  document.getElementById('notif-icon').textContent=icon;
+  document.getElementById('notif-title').textContent=title.replace(/^\S+\s*/,'');
+  document.getElementById('notif-msg').textContent=msg;
+  el.classList.add('show');
+  clearTimeout(notifTimer);
+  notifTimer=setTimeout(()=>el.classList.remove('show'),3500);
+}
 
+// ── TERMINAL ──
 let typingDone=false;
 function startTyping(){
   if(typingDone)return;typingDone=true;
-  const lines=[{cmd:'whoami',out:['bjørrn-schindler · aka codeberserkers888']},{cmd:'cat skills.txt',out:['React · JS · Node.js · Python · OSINT · AppSec']},{cmd:'ls projects/',out:['svindelsjekk.no/ [LIVE 🛡️]','wystarczajaco/  [audiobook 📚]']},{cmd:'echo $LOCATION',out:['Norway 🇳🇴']},{cmd:'echo $STATUS',out:['open to remote opportunities ✓']}];
+  const lines=[
+    {cmd:'whoami',out:['bjørrn-schindler · aka codeberserkers888']},
+    {cmd:'cat skills.txt',out:['React · JS · Node.js · Python · OSINT · AppSec']},
+    {cmd:'ls projects/',out:['svindelsjekk.no/ [LIVE 🛡️]','wystarczajaco/  [audiobook 📚]']},
+    {cmd:'echo $LOCATION',out:['Norway 🇳🇴']},
+    {cmd:'echo $STATUS',out:['open to remote opportunities ✓']},
+    {cmd:'cat blog.txt',out:['Security · Dev · Civic Tech — click Blog to read →']}
+  ];
   const output=document.getElementById('term-output');let li=0;
-  function typeLine(){if(li>=lines.length){document.getElementById('term-input-line').style.display='flex';setTimeout(()=>document.getElementById('term-input').focus(),50);return;}const{cmd,out}=lines[li++];const cmdEl=document.createElement('div');cmdEl.className='term-line';cmdEl.innerHTML=`<span class="term-prompt">codeberserkers888</span><span class="term-at">@</span><span class="term-host">portfolio</span><span class="term-sym"> ~$ </span><span class="term-cmd"></span>`;output.appendChild(cmdEl);const span=cmdEl.querySelector('.term-cmd');let i=0;const iv=setInterval(()=>{span.textContent+=cmd[i++];output.scrollTop=output.scrollHeight;if(i>=cmd.length){clearInterval(iv);setTimeout(()=>{out.forEach(line=>{const o=document.createElement('div');o.className='term-line';o.innerHTML=`<span class="term-out">${line}</span>`;output.appendChild(o);});output.appendChild(document.createElement('br'));output.scrollTop=output.scrollHeight;setTimeout(typeLine,240);},80);}},38);}
-  document.getElementById('typing-cmd').innerHTML='<span class="term-cursor"></span>';setTimeout(typeLine,500);
+  function typeLine(){
+    if(li>=lines.length){document.getElementById('term-input-line').style.display='flex';setTimeout(()=>document.getElementById('term-input').focus(),50);return;}
+    const{cmd,out}=lines[li++];
+    const cmdEl=document.createElement('div');cmdEl.className='term-line';
+    cmdEl.innerHTML=`<span class="term-prompt">codeberserkers888</span><span class="term-at">@</span><span class="term-host">portfolio</span><span class="term-sym"> ~$ </span><span class="term-cmd"></span>`;
+    output.appendChild(cmdEl);
+    const span=cmdEl.querySelector('.term-cmd');let i=0;
+    const iv=setInterval(()=>{span.textContent+=cmd[i++];output.scrollTop=output.scrollHeight;if(i>=cmd.length){clearInterval(iv);setTimeout(()=>{out.forEach(line=>{const o=document.createElement('div');o.className='term-line';o.innerHTML=`<span class="term-out">${line}</span>`;output.appendChild(o);});output.appendChild(document.createElement('br'));output.scrollTop=output.scrollHeight;setTimeout(typeLine,240);},80);}},38);
+  }
+  document.getElementById('typing-cmd').innerHTML='<span class="term-cursor"></span>';
+  setTimeout(typeLine,500);
 }
 
-const termCmds={help:"Available: help · about · skills · projects · contact · svindelsjekk · github · linkedin · clear",about:"CodeBerserkers888 · Bjørrn Schindler · Fullstack Dev & Security Enthusiast · Norway 🇳🇴",skills:"React · JS · Node.js · Python · OSINT · AppSec · HTML/CSS · Open Source",projects:"svindelsjekk.no (live 🛡️) · wystarczajaco/ (audiobook 📚) · github.com/CodeBerserkers888",contact:"codeberserkers888@proton.me",svindelsjekk:"Opening SvindelSjekk.no...",github:"Opening GitHub...",linkedin:"Opening LinkedIn...",clear:'__clear__'};
-function termCommand(e){if(e.key!=='Enter')return;const input=document.getElementById('term-input'),val=input.value.trim().toLowerCase();input.value='';const output=document.getElementById('term-output');const echo=document.createElement('div');echo.className='term-line';echo.innerHTML=`<span class="term-prompt">codeberserkers888</span><span class="term-at">@</span><span class="term-host">portfolio</span><span class="term-sym"> ~$ </span><span class="term-cmd">${val}</span>`;output.insertBefore(echo,document.getElementById('term-input-line'));if(!val)return;const resp=termCmds[val]||`bash: ${val}: command not found — type 'help' for list`;if(resp==='__clear__'){[...output.querySelectorAll('.term-line')].filter(n=>n.id!=='term-input-line').forEach(n=>n.remove());[...output.querySelectorAll('br')].forEach(n=>n.remove());return;}if(val==='github')window.open('https://github.com/CodeBerserkers888','_blank');if(val==='linkedin')window.open('https://www.linkedin.com/in/bj%C3%B8rrn-schindler-501605258','_blank');if(val==='svindelsjekk')window.open('https://svindelsjekk.no','_blank');const res=document.createElement('div');res.className='term-line';const isErr=resp.includes('not found');res.innerHTML=`<span style="color:${isErr?'var(--red)':'var(--accent)'}">${resp}</span>`;output.insertBefore(res,document.getElementById('term-input-line'));const br=document.createElement('br');output.insertBefore(br,document.getElementById('term-input-line'));output.scrollTop=output.scrollHeight;}
+const termCmds={
+  help:"Commands: help · about · skills · projects · blog · contact · svindelsjekk · github · linkedin · clear",
+  about:"CodeBerserkers888 · Bjørrn Schindler · Fullstack Dev & Security Researcher · Norway 🇳🇴",
+  skills:"React · JS · Node.js · Python · OSINT · AppSec · HTML/CSS · Docker · Open Source",
+  projects:"svindelsjekk.no (live 🛡️) · wystarczajaco/ (audiobook 📚) · github.com/CodeBerserkers888",
+  blog:"Topics: Cybersecurity · Dev · Civic Tech — type 'open blog' or click Blog in dock",
+  'open blog':'__openblog__',
+  contact:"codeberserkers888@proton.me",
+  svindelsjekk:"Opening SvindelSjekk.no...",
+  github:"Opening GitHub...",
+  linkedin:"Opening LinkedIn...",
+  clear:'__clear__'
+};
+function termCommand(e){
+  if(e.key!=='Enter')return;
+  const input=document.getElementById('term-input'),val=input.value.trim().toLowerCase();
+  input.value='';
+  const output=document.getElementById('term-output');
+  const echo=document.createElement('div');echo.className='term-line';
+  echo.innerHTML=`<span class="term-prompt">codeberserkers888</span><span class="term-at">@</span><span class="term-host">portfolio</span><span class="term-sym"> ~$ </span><span class="term-cmd">${val}</span>`;
+  output.insertBefore(echo,document.getElementById('term-input-line'));
+  if(!val)return;
+  const resp=termCmds[val]||`bash: ${val}: command not found — type 'help' for list`;
+  if(resp==='__clear__'){[...output.querySelectorAll('.term-line')].filter(n=>n.id!=='term-input-line').forEach(n=>n.remove());[...output.querySelectorAll('br')].forEach(n=>n.remove());return;}
+  if(resp==='__openblog__'){openWindow('blog');return;}
+  if(val==='github')window.open('https://github.com/CodeBerserkers888','_blank');
+  if(val==='linkedin')window.open('https://www.linkedin.com/in/bj%C3%B8rrn-schindler-501605258','_blank');
+  if(val==='svindelsjekk')window.open('https://svindelsjekk.no','_blank');
+  const res=document.createElement('div');res.className='term-line';
+  const isErr=resp.includes('not found');
+  res.innerHTML=`<span style="color:${isErr?'var(--red)':'var(--accent)'}">${resp}</span>`;
+  output.insertBefore(res,document.getElementById('term-input-line'));
+  const br=document.createElement('br');output.insertBefore(br,document.getElementById('term-input-line'));
+  output.scrollTop=output.scrollHeight;
+}
 </script>
 </body>
 </html>
